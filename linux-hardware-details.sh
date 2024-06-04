@@ -5,6 +5,13 @@ echo "Home: $HOME"
 echo "Hostname: $(hostname)"
 echo "Kernel Version: $(uname -r)"
 echo "Distribution: $(lsb_release -ds)"
+echo "Compiler Version: ${gcc --version}"
+echo "System Config Information:" 
+echo "---------------------------------------------------"
+echo "$(hostnamectl)"
+echo -e "------------------------------------------------\n"
+
+
 
 echo -e "\n===========================[ CPU Information ]==========================================================\n"
 lscpu | grep "Model name"
