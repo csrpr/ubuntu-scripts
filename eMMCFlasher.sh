@@ -36,10 +36,9 @@ sudo sfdisk ${DRIVE} <<-__EOF__
 1M,,L,*
 __EOF__
 
-
-sudo sfdisk /dev/mmcblk1 <<-__EOF__
-1M,,L,*
-__EOF__
+# sudo sfdisk /dev/mmcblk1 <<-__EOF__
+# 1M,,L,*
+# __EOF__
 
 sleep 1 # Wait for the partition table to be updated 
 
