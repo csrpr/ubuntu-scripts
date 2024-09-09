@@ -36,6 +36,11 @@ sudo sfdisk ${DRIVE} <<-__EOF__
 1M,,L,*
 __EOF__
 
+
+sudo sfdisk /dev/mmcblk1 <<-__EOF__
+1M,,L,*
+__EOF__
+
 sleep 1 # Wait for the partition table to be updated 
 
 echo "[Done Partitioning.]"
@@ -65,6 +70,8 @@ mkdir -p /media/mmcblk0p1
 
 # Mount the source partition to /media/mmcblk0p1
 mount /dev/mmcblk0p1 /media/mmcblk0p1 &> /dev/null
+
+sync
 
 # Copy all files from the source partition to the new partition
 cp -rf /media/mmcblk0p1/* /mnt
