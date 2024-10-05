@@ -32,57 +32,60 @@ umount "/media/$BLOCK"p* &> /dev/null
 
 echo "[Creating Partition on $DRIVE...]"
 
-sudo sfdisk ${DRIVE} <<-__EOF__
+sudo sfdisk ${DRIVE} <<-__EOF__   
 1M,,L,*
 __EOF__
 
-# sudo sfdisk /dev/mmcblk1 <<-__EOF__
-# 1M,,L,*
-# __EOF__
+sleep 2 
+echo "[syncing....]"
+sync
+sync
 
-sleep 1 # Wait for the partition table to be updated 
 
 echo "[Done Partitioning.]"
 # List the partition table to verify the changes 
 fdisk $DRIVE -l
 
-sleep 1
-echo "[Making filesystem...]"
-
-# Umount any remaining partitons and suppress error messages
-umount "/dev/$BLOCK"p* &> /dev/null
-sleep 1
-
-umount " /media/$BLOCK"p* &> /dev/null
 sleep 2
+sync
 
-# Format the single partition with ext4 filesystem 'mkfs.ext4' creates an ext4 filesystem, '-L rootfs' labels the filesystem as 'rootfs'
+
+echo "[Making filesystem...]"
+umount "/dev/$BLOCK"p* &> /dev/null
+sleep 2
+echo "[syncing....]"
+sync
+sync
+
+# Format the single partition 
 mkfs.ext4 -L rootfs /dev/${BLOCK}p1
+
+sleep 2
+sync
+sync
+
 
 echo "[Mounting Root Partition..]"
 # Mount the new partition to /mnt
 mount "$DRIVE"p1 /mnt
 
-echo "[Extracting Filesystem..]"
-# Create a mount point for the source partition 
-mkdir -p /media/mmcblk0p1
-
-# Mount the source partition to /media/mmcblk0p1
-mount /dev/mmcblk0p1 /media/mmcblk0p1 &> /dev/null
-
+sleep 2
+sync
 sync
 
-# Copy all files from the source partition to the new partition
-cp -rf /media/mmcblk0p1/* /mnt
+echo "[Extracting the file systems..]"
+tar -xvf rootfs.tar -C /mnt
 
 echo "[Syncing..]"
 sync
+sync
 
-echo "[Unmounting Root Partition]"
+echo "[Umounting root partition]"
 umount "$DRIVE"p1
 
-# Set the environment variable to specify boot targets
-fw_setenv boot_targets emmc
+echo "[Syncing..]"
+sync
+sync
 
 echo " "
 echo "eMMC Setup completed."
